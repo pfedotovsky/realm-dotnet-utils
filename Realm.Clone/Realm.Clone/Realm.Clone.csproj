@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Pavel Fedotovsky</Authors>
+    <Company>DotNetRu</Company>
+    <Description>Extension method to deep clone Realm objects. This is useful to unmanage Realm objects.</Description>
+    <PackageTags>realm</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Realm.Database" Version="3.4.0" />
+  </ItemGroup>
+
+</Project>
