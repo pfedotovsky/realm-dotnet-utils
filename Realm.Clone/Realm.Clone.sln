@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realm.Clone", "Realm.Clone\Realm.Clone.csproj", "{0F442265-3EAF-48AC-B9C5-F6E8ED837668}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmClone", "Realm.Clone\RealmClone.csproj", "{0F442265-3EAF-48AC-B9C5-F6E8ED837668}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Realms;
 
-namespace Conference.DataStore.Next
+namespace RealmClone
 {
     public static class RealmExtensions
     {
