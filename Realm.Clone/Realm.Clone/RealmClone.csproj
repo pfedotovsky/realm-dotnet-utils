@@ -8,7 +8,7 @@
     <Description>Extension method to deep clone Realm objects. This is useful to unmanage Realm objects.</Description>
     <PackageTags>realm</PackageTags>
     <PackageProjectUrl>https://github.com/pfedotovsky/realm-dotnet-clone</PackageProjectUrl>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
