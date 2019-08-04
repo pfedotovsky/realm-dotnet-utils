@@ -73,8 +73,21 @@ namespace RealmClone
                     // Enumerate source list and recursively call Clone method on each object
                     foreach (var item in sourceList)
                     {
-                        var value = typeof(RealmExtensions).GetMethod("Clone", BindingFlags.Static | BindingFlags.Public)
-                            .MakeGenericMethod(item.GetType()).Invoke(item, new[] { item });
+                        object value;
+
+                        // if item is value type or string, then there's no need for copying
+                        if (item.GetType().IsValueType || item.GetType() == typeof(string))
+                        {
+                            value = item;
+                        }
+                        else
+                        {
+                            value = typeof(RealmExtensions)
+                                .GetMethod("Clone", BindingFlags.Static | BindingFlags.Public)
+                                .MakeGenericMethod(item.GetType())
+                                .Invoke(item, new[] { item });
+                        }
+
                         targetList.Add(value);
                     }
                 }
