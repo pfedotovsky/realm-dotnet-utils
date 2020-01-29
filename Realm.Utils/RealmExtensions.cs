@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Realms;
 
-namespace Realm.Utils
+namespace Realms.Utils
 {
     public static class RealmExtensions
     {
@@ -24,7 +23,7 @@ namespace Realm.Utils
             // List of skip namespaces
             var skipNamespaces = new List<string>
             {
-                typeof(Realms.Realm).Namespace
+                typeof(Realm).Namespace
             };
 
             var collectionNamespace = typeof(List<string>).Namespace;
