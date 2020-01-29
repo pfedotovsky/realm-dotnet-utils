@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Pavel Fedotovsky</Authors>
+    <Company>DotNetRu</Company>
+    <Description>Useful realm Extension methods:
+        - Extension method to deep clone Realm objects. This is useful to unmanage Realm objects
+        - Method to copy data from one realm to another
+    </Description>
+    <PackageTags>realm</PackageTags>
+    <PackageProjectUrl>https://github.com/pfedotovsky/realm-dotnet-utils</PackageProjectUrl>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Realm" Version="4.1.0" />
+  </ItemGroup>
+
+</Project>
