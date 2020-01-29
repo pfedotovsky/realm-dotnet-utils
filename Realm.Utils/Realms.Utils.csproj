@@ -11,6 +11,7 @@
     </Description>
     <PackageTags>realm</PackageTags>
     <PackageProjectUrl>https://github.com/pfedotovsky/realm-dotnet-utils</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>        
     <Version>1.0.0</Version>
   </PropertyGroup>
 
