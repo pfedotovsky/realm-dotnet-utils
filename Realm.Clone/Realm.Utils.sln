@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmClone", "Realm.Clone\RealmClone.csproj", "{0F442265-3EAF-48AC-B9C5-F6E8ED837668}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realm.Utils", "Realm.Utils\Realm.Utils.csproj", "{DC90DBA5-2B19-4FD3-BC62-258EAA801548}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0F442265-3EAF-48AC-B9C5-F6E8ED837668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F442265-3EAF-48AC-B9C5-F6E8ED837668}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F442265-3EAF-48AC-B9C5-F6E8ED837668}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F442265-3EAF-48AC-B9C5-F6E8ED837668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC90DBA5-2B19-4FD3-BC62-258EAA801548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC90DBA5-2B19-4FD3-BC62-258EAA801548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC90DBA5-2B19-4FD3-BC62-258EAA801548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC90DBA5-2B19-4FD3-BC62-258EAA801548}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
