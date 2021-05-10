@@ -15,22 +15,21 @@ namespace Realms.Utils
                 throw new InvalidOperationException("Attempt to wipe data from realm");
             }
 
-            var adjucencyList = GetAdjecencyList(toRealm.Schema);
-            var updateOrder = BreadthFirstSearch(adjucencyList).Reverse();
+            var adjacencyList = GetAdjacencyList(toRealm.Schema);
+            var updateOrder = BreadthFirstSearch(adjacencyList).Reverse();
 
-            using (var transaction = toRealm.BeginWrite())
+
+            toRealm.Write(() =>
             {
                 foreach (var objectSchema in updateOrder)
                 {
                     var keyProperty = objectSchema.Single(property => property.IsPrimaryKey);
                     MoveRealmObjects(fromRealm: fromRealm, toRealm: toRealm, objectSchema.Name, keyProperty.Name);
                 }
-
-                transaction.Commit();
-            }
+            });
         }
 
-        private static Dictionary<ObjectSchema, HashSet<ObjectSchema>> GetAdjecencyList(RealmSchema realmSchema)
+        private static Dictionary<ObjectSchema, HashSet<ObjectSchema>> GetAdjacencyList(RealmSchema realmSchema)
         {
             var resultDictionary = new Dictionary<ObjectSchema, HashSet<ObjectSchema>>();
 
@@ -41,13 +40,13 @@ namespace Realms.Utils
             {
                 var hashset = new HashSet<ObjectSchema>();
 
-                var objectType = fieldType.GetValue(objectSchema) as Type;
+                var objectType = fieldType?.GetValue(objectSchema) as Type;
 
-                var backlinks = objectType.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(BacklinkAttribute)));
+                var backLinks = objectType?.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(BacklinkAttribute))).ToArray();
 
                 foreach (var property in objectSchema)
                 {
-                    if (backlinks.Any(backlink => backlink.Name == property.Name))
+                    if (backLinks?.Any(backLink => backLink.Name == property.Name) == true)
                     {
                         continue;
                     }
@@ -114,9 +113,9 @@ namespace Realms.Utils
 
                 var primaryKeyProperty = type.GetProperty(primaryKeyPropertyName);
 
-                var sourcePropertyValue = primaryKeyProperty.GetValue(obj);
+                var sourcePropertyValue = primaryKeyProperty?.GetValue(obj);
 
-                return !newObjects.Any(newObject => primaryKeyProperty.GetValue(newObject).GetHashCode() == sourcePropertyValue.GetHashCode());
+                return !newObjects.Any(newObject => primaryKeyProperty?.GetValue(newObject)?.GetHashCode() == sourcePropertyValue?.GetHashCode());
             });
 
             foreach (var @object in objectsToRemove)

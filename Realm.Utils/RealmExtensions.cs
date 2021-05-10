@@ -36,7 +36,7 @@ namespace Realms.Utils
 
             foreach (var property in targetProperties)
             {
-                if (skipNamespaces.Contains(property.DeclaringType.Namespace))
+                if (skipNamespaces.Contains(property.DeclaringType?.Namespace))
                 {
                     continue;
                 }
@@ -49,9 +49,9 @@ namespace Realms.Utils
 
                 var sourceValue = property.GetValue(source);
 
-                if (sourceValue is RealmObject)
+                if (sourceValue is RealmObject realmObject)
                 {
-                    var targetValue = (sourceValue as RealmObject).Clone();
+                    var targetValue = realmObject.Clone();
                     propertyInfo.SetValue(target, targetValue);
 
                     continue;
@@ -63,21 +63,24 @@ namespace Realms.Utils
 
                     var targetList = property.GetValue(target) as IList;
 
-                    // Enumerate source list and recursively call Clone method on each object
-                    foreach (var item in sourceList)
+                    if (sourceList != null && targetList != null)
                     {
-                        object value;
-
-                        if (item.GetType().IsValueType || item.GetType() == typeof(string))
+                        // Enumerate source list and recursively call Clone method on each object
+                        foreach (var item in sourceList)
                         {
-                            value = item;
-                        }
-                        else
-                        {
-                            value = (item as RealmObject).Clone();
-                        }
+                            object value;
 
-                        targetList.Add(value);
+                            if (item.GetType().IsValueType || item is string)
+                            {
+                                value = item;
+                            }
+                            else
+                            {
+                                value = (item as RealmObject).Clone();
+                            }
+
+                            targetList.Add(value);
+                        }
                     }
 
                     continue;
