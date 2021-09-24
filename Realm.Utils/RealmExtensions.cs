@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,78 +6,103 @@ using System.Reflection;
 
 namespace Realms.Utils
 {
-    public static class RealmExtensions
+        public static class RealmExtensions
     {
-        public static RealmObject Clone(this RealmObject source)
+        private const BindingFlags Flags = BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
+        private static readonly string? CollectionNamespace = typeof(List<string>).Namespace;
+
+        private static readonly string[] SkipNamespaces =
         {
-            // If source is null return null
+            typeof(Realm).Namespace
+        };
+
+        public static T Clone<T>(this T obj)
+            where T : RealmObject
+        {
+            return (T)CloneInternal(obj)!;
+        }
+
+        public static IList<T> ToClonedList<T>(this IEnumerable<T> enumerable)
+            where T : RealmObject
+        {
+            return enumerable.ToClonedEnumerable().ToList();
+        }
+
+        public static IEnumerable<T> ToClonedEnumerable<T>(this IEnumerable<T> enumerable)
+            where T : RealmObject
+        {
+            return enumerable.Select(item => item.Clone()).ToList();
+        }
+
+        public static RealmObject? Clone(this RealmObject? source)
+        {
+            return (RealmObject?)CloneInternal(source);
+        }
+
+        public static EmbeddedObject? Clone(this EmbeddedObject? source)
+        {
+            return (EmbeddedObject?)CloneInternal(source);
+        }
+
+        private static RealmObjectBase? CloneInternal(this RealmObjectBase? source)
+        {
             if (source == null)
             {
                 return default;
             }
 
-            var targetType = source.GetType();
+            Type targetType = source.GetType();
+            object? target = Activator.CreateInstance(targetType);
 
-            var target = Activator.CreateInstance(targetType);
-
-            // List of skip namespaces
-            var skipNamespaces = new List<string>
-            {
-                typeof(Realm).Namespace
-            };
-
-            var collectionNamespace = typeof(List<string>).Namespace;
-
-            var flags = BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
-
-            var targetProperties = targetType.GetProperties(flags)
-                .Where(x => !x.IsDefined(typeof(IgnoredAttribute), true))
-                .Where(x => !x.IsDefined(typeof(BacklinkAttribute), true));
+            IEnumerable<PropertyInfo> targetProperties = targetType.GetProperties(Flags)
+                                                                   .Where(x => !x.IsDefined(typeof(IgnoredAttribute)) && !x.IsDefined(typeof(BacklinkAttribute), true))
+                                                                   .ToArray();
 
             foreach (var property in targetProperties)
             {
-                if (skipNamespaces.Contains(property.DeclaringType?.Namespace))
+                //underlying method supports null
+                if (SkipNamespaces.Contains(property.DeclaringType?.Namespace!))
                 {
                     continue;
                 }
 
-                var propertyInfo = targetType.GetProperty(property.Name, flags);
+                PropertyInfo? propertyInfo = targetType.GetProperty(property.Name, Flags);
                 if (propertyInfo == null)
                 {
                     continue;
                 }
 
-                var sourceValue = property.GetValue(source);
-
-                if (sourceValue is RealmObject realmObject)
+                object? sourceValue = property.GetValue(source);
+                switch (sourceValue)
                 {
-                    var targetValue = realmObject.Clone();
-                    propertyInfo.SetValue(target, targetValue);
-
-                    continue;
+                    case RealmObject realmObject:
+                        RealmObject? clonedRealmObject = realmObject.Clone();
+                        propertyInfo.SetValue(target, clonedRealmObject);
+                        continue;
+                    case EmbeddedObject embeddedObject:
+                        EmbeddedObject? clonedEmbeddedObject = embeddedObject.Clone();
+                        propertyInfo.SetValue(target, clonedEmbeddedObject);
+                        continue;
                 }
 
-                if (property.PropertyType.Namespace == collectionNamespace && sourceValue != null)
+                if (property.PropertyType.Namespace == CollectionNamespace && sourceValue != null)
                 {
                     var sourceList = sourceValue as IEnumerable;
-
                     var targetList = property.GetValue(target) as IList;
-
                     if (sourceList != null && targetList != null)
                     {
                         // Enumerate source list and recursively call Clone method on each object
                         foreach (var item in sourceList)
                         {
-                            object value;
-
-                            if (item.GetType().IsValueType || item is string)
+                            object? value = item switch
                             {
-                                value = item;
-                            }
-                            else
-                            {
-                                value = (item as RealmObject).Clone();
-                            }
+                                null => null,
+                                ValueType => item,
+                                string => item,
+                                RealmObject realmObject => realmObject.Clone(),
+                                EmbeddedObject embeddedObject => embeddedObject.Clone(),
+                                _ => throw new ArgumentOutOfRangeException(nameof(item), item.GetType(), "Can only clone value types, strings, RealmObject and EmbeddedObject")
+                            };
 
                             targetList.Add(value);
                         }
@@ -89,7 +114,7 @@ namespace Realms.Utils
                 propertyInfo.SetValue(target, sourceValue);
             }
 
-            return target as RealmObject;
+            return (RealmObjectBase)target;
         }
     }
 }
